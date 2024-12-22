@@ -26,6 +26,7 @@ from lessons.viewsets import LessonViewSet, MaterialViewSet
 from homework.viewsets import HomeworkViewSet, GradeViewSet
 from orders.viewsets import OrderViewSet, PaymentViewSet
 from forums.viewsets import ForumViewSet, TopicViewSet, CommentViewSet
+from telegram.views import telegram
 
 router = DefaultRouter()
 
@@ -58,5 +59,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('telegram', telegram),
 ]
 

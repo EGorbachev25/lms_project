@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from courses.models import Course
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from telegram.tasks import send_order_notification
 
 
 class Order(models.Model):
@@ -19,6 +22,16 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"
+
+
+@receiver(post_save, sender=Order)
+def order_create_signal(sender, instance, created, **kwargs):
+
+    if created:
+
+        if hasattr(instance.user, 'telegram_account') and instance.user.telegram_account.telegram_id:
+            user_id = instance.user.telegram_account.telegram_id
+            send_order_notification.delay(user_id, instance.id)
 
 
 class Payment(models.Model):
